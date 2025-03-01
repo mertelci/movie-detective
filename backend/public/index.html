@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Film Önerisi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen p-8">
+    <div class="max-w-4xl mx-auto">
+        <!-- Filtre Formu -->
+        <div class="bg-white rounded-xl shadow-md overflow-hidden p-6 mb-6">
+            <h1 class="text-2xl font-bold text-center mb-6">Film Önerisi</h1>
+            
+            <form id="recommendForm" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Film Türleri</label>
+                    <div id="genreContainer" class="flex flex-wrap gap-2">
+                        <!-- Film türleri buraya eklenecek -->
+                    </div>
+                </div>
+
+                <!-- Oyuncu Arama -->
+                <div class="relative">
+                    <label class="block text-sm font-medium text-gray-700">Oyuncu (Opsiyonel)</label>
+                    <div class="mt-1 relative">
+                        <input type="text" 
+                               id="actorSearch" 
+                               placeholder="Oyuncu ara..."
+                               class="w-full rounded-md border-gray-300 shadow-sm p-2 border focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
+                        <div id="actorResults" class="absolute z-10 w-full bg-white mt-1 rounded-md shadow-lg hidden">
+                            <!-- Arama sonuçları buraya gelecek -->
+                        </div>
+                    </div>
+                    <div id="selectedActor" class="mt-2 hidden">
+                        <div class="flex items-center gap-2 bg-blue-50 p-2 rounded-md">
+                            <img id="selectedActorImage" class="w-8 h-8 rounded-full object-cover" src="" alt="">
+                            <span id="selectedActorName" class="text-sm"></span>
+                            <button type="button" id="removeActor" class="text-red-500 hover:text-red-700">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                </svg>
+                            </button>
+                            <input type="hidden" id="selectedActorId">
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Dil</label>
+                    <select id="language" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border">
+                        <option value="tr">Türkçe</option>
+                        <option value="en">İngilizce</option>
+                        <option value="fr">Fransızca</option>
+                        <option value="es">İspanyolca</option>
+                        <option value="de">Almanca</option>
+                        <option value="it">İtalyanca</option>
+                        <option value="ja">Japonca</option>
+                        <option value="ko">Korece</option>
+                        <option value="hi">Hintçe</option>
+                    </select>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Yıl Aralığı</label>
+                    <select id="yearRange" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border">
+                        <option value="2020-2024">2020 - 2024 (Güncel)</option>
+                        <option value="2010-2019">2010 - 2019</option>
+                        <option value="2000-2009">2000 - 2009</option>
+                        <option value="1990-1999">1990 - 1999</option>
+                        <option value="1980-1989">1980 - 1989</option>
+                        <option value="1970-1979">1970 - 1979</option>
+                        <option value="1960-1969">1960 - 1969</option>
+                        <option value="1950-1959">1950 - 1959</option>
+                    </select>
+                </div>
+
+                <button type="submit" id="submitButton"
+                    class="w-full bg-blue-500 text-white rounded-md py-2 px-4 hover:bg-blue-600 transition-colors">
+                    Film Öner
+                </button>
+            </form>
+        </div>
+
+        <!-- Loading Animasyonu -->
+        <div id="loading" class="hidden">
+            <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                <div class="bg-white p-8 rounded-lg shadow-xl text-center">
+                    <div class="lds-ripple">
+                        <div></div>
+                        <div></div>
+                    </div>
+                    <p class="mt-4 text-gray-600">Film bilgileri yükleniyor...</p>
+                </div>
+            </div>
+        </div>
+
+        <style>
+            .lds-ripple {
+                display: inline-block;
+                position: relative;
+                width: 80px;
+                height: 80px;
+            }
+            .lds-ripple div {
+                position: absolute;
+                border: 4px solid #3b82f6;
+                opacity: 1;
+                border-radius: 50%;
+                animation: lds-ripple 1s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+            }
+            .lds-ripple div:nth-child(2) {
+                animation-delay: -0.5s;
+            }
+            @keyframes lds-ripple {
+                0% {
+                    top: 36px;
+                    left: 36px;
+                    width: 0;
+                    height: 0;
+                    opacity: 0;
+                }
+                4.9% {
+                    top: 36px;
+                    left: 36px;
+                    width: 0;
+                    height: 0;
+                    opacity: 0;
+                }
+                5% {
+                    top: 36px;
+                    left: 36px;
+                    width: 0;
+                    height: 0;
+                    opacity: 1;
+                }
+                100% {
+                    top: 0px;
+                    left: 0px;
+                    width: 72px;
+                    height: 72px;
+                    opacity: 0;
+                }
+            }
+        </style>
+
+        <!-- Hata Mesajı -->
+        <div id="error" class="mt-4 p-4 bg-red-100 text-red-700 rounded-lg hidden"></div>
+        
+        <!-- Film Sonucu -->
+        <div id="result" class="mt-6 hidden">
+            <div class="bg-white rounded-xl shadow-md overflow-hidden">
+                <div class="md:flex">
+                    <!-- Film Posteri -->
+                    <div class="md:flex-shrink-0">
+                        <div class="relative h-full">
+                            <img id="moviePoster" class="h-full w-full md:w-80 object-cover" src="" alt="">
+                            <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent p-4 text-white">
+                                <div class="inline-block bg-yellow-500 text-black font-bold px-2 py-1 rounded text-sm mb-2">
+                                    ⭐ <span id="movieRating"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Film Detayları -->
+                    <div class="p-8 w-full">
+                        <div class="flex flex-col">
+                            <h2 id="movieTitle" class="text-3xl font-bold mb-2"></h2>
+                            <p id="movieDetails" class="text-sm text-gray-500 mb-2"></p>
+                            <p id="director" class="text-base font-medium text-gray-800 mb-4"></p>
+                            <p id="movieOverview" class="text-gray-600 mb-6 text-base leading-relaxed"></p>
+
+                            <!-- Film Fragmanı -->
+                            <div id="trailerSection" class="mb-6 hidden">
+                                <h3 class="font-bold text-gray-700 mb-2">Fragman</h3>
+                                <div class="aspect-w-16 aspect-h-9">
+                                    <iframe id="trailerFrame" class="w-full rounded-lg shadow-lg" height="315" frameborder="0" allowfullscreen></iframe>
+                                </div>
+                            </div>
+
+                            <!-- İzleme Platformları -->
+                            <div id="watchProvidersSection" class="mb-6 hidden">
+                                <div class="flex items-center gap-2">
+                                    <h3 class="font-bold text-gray-700">İzleme Platformları:</h3>
+                                    <div id="streamProviders" class="flex flex-wrap gap-2"></div>
+                                </div>
+                            </div>
+
+                            <!-- Oyuncu Kadrosu -->
+                            <div>
+                                <h3 class="font-bold text-gray-700 mb-3">Oyuncu Kadrosu</h3>
+                                <div id="movieCast" class="grid grid-cols-2 md:grid-cols-3 gap-3">
+                                    <!-- Oyuncular buraya eklenecek -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Geçmiş Öneriler -->
+        <div id="history" class="mt-6 bg-white rounded-xl shadow-md overflow-hidden p-6 hidden">
+            <h3 class="text-xl font-bold mb-4">Önceki Öneriler</h3>
+            <div id="historyList" class="grid grid-cols-2 md:grid-cols-5 gap-4">
+                <!-- Geçmiş öneriler buraya eklenecek -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Film türlerini yükle
+        function loadGenres(language = 'tr') {
+            fetch(`/api/genres?language=${language}`)
+                .then(res => res.json())
+                .then(data => {
+                    const container = document.getElementById('genreContainer');
+                    container.innerHTML = ''; // Mevcut türleri temizle
+                    data.genres.forEach(genre => {
+                        const button = document.createElement('button');
+                        button.type = 'button';
+                        button.dataset.id = genre.id;
+                        button.className = 'px-3 py-1.5 text-sm rounded-full border transition-colors duration-200 genre-button';
+                        button.classList.add('border-gray-300', 'bg-white', 'text-gray-700', 'hover:bg-gray-50');
+                        button.textContent = genre.name;
+                        
+                        button.addEventListener('click', () => {
+                            button.classList.toggle('bg-blue-500');
+                            button.classList.toggle('border-blue-500');
+                            button.classList.toggle('text-white');
+                            button.classList.toggle('bg-white');
+                            button.classList.toggle('border-gray-300');
+                            button.classList.toggle('text-gray-700');
+                        });
+                        
+                        container.appendChild(button);
+                    });
+                });
+        }
+
+        // Sayfa yüklendiğinde türleri yükle
+        loadGenres();
+
+        // Dil değiştiğinde türleri güncelle
+        document.getElementById('language').addEventListener('change', (e) => {
+            loadGenres(e.target.value);
+        });
+
+        // Debounce fonksiyonu
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
+        // Kişi arama fonksiyonu
+        async function searchPerson(query) {
+            if (!query.trim()) {
+                document.getElementById('actorResults').classList.add('hidden');
+                return;
+            }
+
+            try {
+                const language = document.getElementById('language').value;
+                const response = await fetch(`/api/search/person?query=${encodeURIComponent(query)}&language=${language}`);
+                const people = await response.json();
+
+                const resultsDiv = document.getElementById('actorResults');
+                resultsDiv.innerHTML = '';
+
+                const filteredPeople = people.filter(p => p.known_for_department === 'Acting');
+
+                if (filteredPeople.length === 0) {
+                    resultsDiv.innerHTML = `<div class="p-2 text-gray-500 text-sm">Sonuç bulunamadı</div>`;
+                } else {
+                    filteredPeople.forEach(person => {
+                        const div = document.createElement('div');
+                        div.className = 'flex items-center gap-2 p-2 hover:bg-gray-100 cursor-pointer';
+                        div.innerHTML = `
+                            <img src="${person.profile_path 
+                                ? `https://image.tmdb.org/t/p/w45${person.profile_path}`
+                                : 'https://via.placeholder.com/45'}" 
+                                 class="w-8 h-8 rounded-full object-cover" 
+                                 alt="${person.name}">
+                            <span class="text-sm">${person.name}</span>
+                        `;
+                        div.onclick = () => selectPerson(person);
+                        resultsDiv.appendChild(div);
+                    });
+                }
+
+                resultsDiv.classList.remove('hidden');
+            } catch (error) {
+                console.error('Error searching person:', error);
+            }
+        }
+
+        // Kişi seçme fonksiyonu
+        function selectPerson(person) {
+            const selectedDiv = document.getElementById('selectedActor');
+            const resultsDiv = document.getElementById('actorResults');
+            const searchInput = document.getElementById('actorSearch');
+            const imageElement = document.getElementById('selectedActorImage');
+            const nameElement = document.getElementById('selectedActorName');
+            const idInput = document.getElementById('selectedActorId');
+
+            imageElement.src = person.profile_path 
+                ? `https://image.tmdb.org/t/p/w45${person.profile_path}`
+                : 'https://via.placeholder.com/45';
+            nameElement.textContent = person.name;
+            idInput.value = person.id;
+
+            selectedDiv.classList.remove('hidden');
+            resultsDiv.classList.add('hidden');
+            searchInput.value = '';
+        }
+
+        // Kişi kaldırma fonksiyonu
+        function removePerson(type) {
+            const selectedDiv = document.getElementById(`selected${type.charAt(0).toUpperCase() + type.slice(1)}`);
+            const idInput = document.getElementById(`selected${type.charAt(0).toUpperCase() + type.slice(1)}Id`);
+            
+            selectedDiv.classList.add('hidden');
+            idInput.value = '';
+        }
+
+        // Event listeners
+        document.getElementById('actorSearch').addEventListener('input', 
+            debounce(e => searchPerson(e.target.value), 300)
+        );
+
+        document.getElementById('removeActor').addEventListener('click', 
+            () => {
+                document.getElementById('selectedActor').classList.add('hidden');
+                document.getElementById('selectedActorId').value = '';
+            }
+        );
+
+        // Form gönderimi
+        document.getElementById('recommendForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const submitButton = document.getElementById('submitButton');
+            const loadingDiv = document.getElementById('loading');
+            
+            // Buton ve loading durumunu ayarla
+            submitButton.disabled = true;
+            submitButton.classList.add('opacity-50', 'cursor-not-allowed');
+            loadingDiv.classList.remove('hidden');
+            
+            // Hata ve sonuç bölümlerini gizle
+            document.getElementById('error').classList.add('hidden');
+            document.getElementById('result').classList.add('hidden');
+
+            // Seçili türleri al
+            const selectedGenres = Array.from(document.querySelectorAll('.genre-button'))
+                .filter(button => button.classList.contains('bg-blue-500'))
+                .map(button => button.dataset.id);
+
+            if (selectedGenres.length === 0) {
+                const errorDiv = document.getElementById('error');
+                errorDiv.textContent = 'Lütfen en az bir film türü seçin.';
+                errorDiv.classList.remove('hidden');
+                submitButton.disabled = false;
+                submitButton.classList.remove('opacity-50', 'cursor-not-allowed');
+                loadingDiv.classList.add('hidden');
+                return;
+            }
+
+            const yearRange = document.getElementById('yearRange').value;
+            const language = document.getElementById('language').value;
+            const actorId = document.getElementById('selectedActorId').value;
+
+            try {
+                const response = await fetch('/api/recommend', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ 
+                        genres: selectedGenres,
+                        yearRange, 
+                        language,
+                        actorId: actorId || undefined
+                    })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    // Hata mesajını göster
+                    const errorDiv = document.getElementById('error');
+                    errorDiv.textContent = data.message;
+                    errorDiv.classList.remove('hidden');
+                    return;
+                }
+                
+                // Sonuçları göster
+                displayMovieDetails(data);
+            } catch (error) {
+                console.error('Error:', error);
+                const errorDiv = document.getElementById('error');
+                errorDiv.textContent = 'Film önerisi alınırken bir hata oluştu. Lütfen tekrar deneyin.';
+                errorDiv.classList.remove('hidden');
+            } finally {
+                // İşlem bittiğinde loading durumunu kaldır ve butonu aktif et
+                submitButton.disabled = false;
+                submitButton.classList.remove('opacity-50', 'cursor-not-allowed');
+                loadingDiv.classList.add('hidden');
+            }
+        });
+
+        // Film detaylarını gösterme fonksiyonu
+        async function displayMovieDetails(data) {
+            document.getElementById('result').classList.remove('hidden');
+            document.getElementById('movieTitle').textContent = data.title;
+            document.getElementById('movieRating').textContent = data.vote_average.toFixed(1);
+            
+            if (data.poster_path) {
+                document.getElementById('moviePoster').src = `https://image.tmdb.org/t/p/w500${data.poster_path}`;
+                document.getElementById('moviePoster').classList.remove('hidden');
+            } else {
+                document.getElementById('moviePoster').classList.add('hidden');
+            }
+            
+            document.getElementById('movieOverview').textContent = data.overview;
+            
+            // Yönetmen bilgisi
+            if (data.director) {
+                document.getElementById('director').textContent = `Yönetmen: ${data.director}`;
+            } else {
+                document.getElementById('director').textContent = 'Yönetmen: Bilinmiyor';
+            }
+            
+            const details = [
+                `${data.release_date?.split('-')[0] || 'Bilinmiyor'}`,
+                `${data.runtime || 'Bilinmiyor'} dakika`,
+                `${data.originalLanguage || 'Bilinmiyor'}`
+            ].join(' • ');
+            
+            document.getElementById('movieDetails').textContent = details;
+
+            // Fragman
+            const trailerSection = document.getElementById('trailerSection');
+            if (data.trailer) {
+                trailerSection.classList.remove('hidden');
+                document.getElementById('trailerFrame').src = `https://www.youtube.com/embed/${data.trailer}`;
+            } else {
+                trailerSection.classList.add('hidden');
+            }
+
+            // İzleme Platformları
+            const watchProvidersSection = document.getElementById('watchProvidersSection');
+            const streamProviders = data.watchProviders?.stream;
+            
+            if (streamProviders?.length > 0) {
+                watchProvidersSection.classList.remove('hidden');
+                const container = document.getElementById('streamProviders');
+                container.innerHTML = streamProviders.map(provider => `
+                    <img src="https://image.tmdb.org/t/p/original${provider.logo_path}" 
+                         alt="${provider.provider_name}"
+                         title="${provider.provider_name}"
+                         class="w-8 h-8 rounded shadow-sm">
+                `).join('');
+            } else {
+                watchProvidersSection.classList.add('hidden');
+            }
+
+            // Oyuncu Kadrosu
+            displayCast(data.credits?.cast || []);
+        }
+
+        // Oyuncu kadrosunu gösterme
+        function displayCast(cast) {
+            const castDiv = document.getElementById('movieCast');
+            castDiv.innerHTML = '';
+
+            if (cast.length > 0) {
+                cast.slice(0, 6).forEach(actor => {
+                    const actorCard = document.createElement('div');
+                    actorCard.className = 'flex items-center space-x-3 p-2 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors';
+                    
+                    const actorImage = document.createElement('img');
+                    if (actor.profile_path) {
+                        actorImage.src = `https://image.tmdb.org/t/p/w45${actor.profile_path}`;
+                    } else {
+                        actorImage.src = 'https://via.placeholder.com/45x68?text=?';
+                    }
+                    actorImage.className = 'w-10 h-10 rounded-full object-cover shadow-sm';
+                    actorImage.alt = actor.name;
+
+                    const actorInfo = document.createElement('div');
+                    actorInfo.className = 'flex-1 min-w-0';
+                    actorInfo.innerHTML = `
+                        <div class="font-medium text-sm truncate">${actor.name}</div>
+                        <div class="text-gray-500 text-xs truncate">${actor.character}</div>
+                    `;
+
+                    actorCard.appendChild(actorImage);
+                    actorCard.appendChild(actorInfo);
+                    castDiv.appendChild(actorCard);
+                });
+            } else {
+                castDiv.innerHTML = '<div class="col-span-full text-gray-500 text-center">Oyuncu bilgisi bulunamadı.</div>';
+            }
+        }
+    </script>
+</body>
+</html>

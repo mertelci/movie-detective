@@ -1,0 +1,337 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Righteous&display=swap');
+@import "tailwindcss";
+
+:root {
+  --primary-gradient: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+  --card-gradient: linear-gradient(to right bottom, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.9));
+  --highlight-gradient: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--primary-gradient);
+  min-height: 100vh;
+  color: #ffffff;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Improved scrollbar styles */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(30, 41, 59, 0.5);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #0ea5e9;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #0284c7;
+}
+
+/* Enhanced animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.6s ease-out forwards;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* Favorite movie card animations */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.favorite-card {
+  animation: slideIn 0.3s ease-out forwards;
+}
+
+/* Toast notification animations */
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideOutRight {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+}
+
+.toast-enter {
+  animation: slideInRight 0.3s ease-out forwards;
+}
+
+.toast-exit {
+  animation: slideOutRight 0.3s ease-in forwards;
+}
+
+/* Improved glass effect */
+.glass-effect {
+  background: var(--card-gradient);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 
+    0 8px 32px 0 rgba(0, 0, 0, 0.2),
+    0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+
+/* Logo and text styles */
+.logo-font {
+  font-family: 'Righteous', sans-serif;
+  letter-spacing: -0.5px;
+}
+
+.gradient-text {
+  background: var(--highlight-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Button loading state */
+.btn-loading {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-loading::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 200%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(100%);
+  }
+}
+
+/* Movie card styles */
+.movie-gradient {
+  background: linear-gradient(to right, 
+    rgba(30, 41, 59, 0.98) 0%,
+    rgba(30, 41, 59, 0.95) 100%
+  );
+}
+
+/* Cast section improvements */
+.cast-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: #0ea5e9 rgba(30, 41, 59, 0.5);
+}
+
+/* Tooltip custom styles */
+[data-tooltip] {
+  position: relative;
+}
+
+[data-tooltip]:hover::before {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 0.5rem 1rem;
+  background: rgba(15, 23, 42, 0.95);
+  color: white;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  white-space: nowrap;
+  z-index: 10;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(4px);
+}
+
+/* Loading animations */
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.loading-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Line clamp for movie descriptions */
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Hover effects for favorite movie cards */
+.favorite-movie-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.favorite-movie-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+}
+
+/* Favorite movie hover overlay */
+.favorite-movie-overlay {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.favorite-movie-card:hover .favorite-movie-overlay {
+  opacity: 1;
+}
+
+/* Responsive design improvements */
+@media (max-width: 768px) {
+  .cast-scroll {
+    scroll-snap-type: x mandatory;
+  }
+  
+  .cast-scroll > * {
+    scroll-snap-align: start;
+  }
+}
+
+/* Favorites panel animations */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideOut {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+}
+
+.favorites-enter {
+  animation: slideIn 0.3s ease-out forwards;
+}
+
+.favorites-exit {
+  animation: slideOut 0.3s ease-in forwards;
+}
+
+/* Scrollbar styles for favorites panel */
+.favorites-scroll::-webkit-scrollbar {
+  width: 4px;
+}
+
+.favorites-scroll::-webkit-scrollbar-track {
+  background: rgba(30, 41, 59, 0.5);
+}
+
+.favorites-scroll::-webkit-scrollbar-thumb {
+  background: #0ea5e9;
+  border-radius: 9999px;
+}
+
+.favorites-scroll::-webkit-scrollbar-thumb:hover {
+  background: #0284c7;
+}
+
+.favorites-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: #0ea5e9 rgba(30, 41, 59, 0.5);
+}
+
+/* Accordion animations */
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadeIn {
+  animation: slideDown 0.2s ease-out forwards;
+}
+
+/* Panel hover effects */
+.panel-hover {
+  transition: all 0.2s ease;
+}
+
+.panel-hover:hover {
+  background-color: rgba(31, 41, 55, 0.7);
+}
+
+/* Selected button glow effect */
+.selected-filter {
+  box-shadow: 0 0 15px rgba(234, 179, 8, 0.3);
+}

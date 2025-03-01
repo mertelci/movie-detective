@@ -1,0 +1,13 @@
+{
+  "name": "movie-rec",
+  "version": "1.0.0",
+  "main": "index.js",
+"scripts": {
+    "build": "npm install --prefix backend && npm install --prefix frontend/movie && npm run build --prefix frontend/movie",
+    "start": "npm run start --prefix backend"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}
